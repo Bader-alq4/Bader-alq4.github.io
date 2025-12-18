@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Memory Allocator | Bader Al Qasem</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<nav class="project-nav">
+  <a href="../index.html">← Back to Projects</a>
+</nav>
+
+<section class="project-hero">
+  <div class="project-hero-content">
+    <h1>Custom Memory Allocator</h1>
+    <p class="project-subtitle">
+      A low-level malloc/free implementation with splitting, coalescing, dual linked lists, and full stress-tested stability.
+    </p>
+  </div>
+  <div class="project-hero-image">
+    <img src="/images/allocator.jpg" alt="Custom Memory Allocator" />
+  </div>
+</section>
+
+<section class="project-content">
+  <!-- Project Links -->
+  <div class="project-section project-links">
+    <p>
+      <strong>Links:</strong>
+      <a href="https://github.com/Bader-alq4/malloc" target="_blank">GitHub Repository</a>
+    </p>
+  </div>
+
+  <div class="project-section">
+    <h2>Overview</h2>
+    <p>
+      This project is a custom implementation of <code>malloc()</code> and <code>free()</code> written entirely in C.
+      I built it to understand how dynamic memory allocation actually works and to learn how a heap works as well. The allocator manages its own heap using <code>sbrk()</code>, tracks metadata for each block, and handles
+      splitting, coalescing, and reusing freed memory.
+    </p>
+  </div>
+  
+  <div class="project-section">
+    <h2>How It Works</h2>
+    <p>
+      My allocator manages memory by dividing the heap into blocks. Each block has two parts:
+    </p>
+    <pre style="margin-bottom: 1rem;"><code>| block_header | user_memory |</code></pre>
+
+    <p>
+      The <strong>block header</strong> is internal metadata the allocator uses to track the block’s size,
+      whether it is free or allocated, and pointers that link blocks together. The user only sees the
+      memory portion that comes after the header.
+    </p>
+    
+    <h3>The Two Core Data Structures</h3>
+    <p>
+      The allocator maintains two linked lists:
+    </p>
+    <ul>
+      <li>
+        <strong>Heap list</strong> — contains <em>every</em> block in physical memory order.
+        This is how the allocator finds neighboring blocks for splitting or coalescing.
+      </li>
+      <li>
+        <strong>Free list</strong> — contains only free blocks.
+        This is where <code>my_malloc()</code> searches for available space.
+      </li>
+    </ul>
+
+    <h3>Allocation Process (<code>my_malloc()</code>)</h3>
+    <p>
+      When memory is requested, the allocator follows a simple flow:
+    </p>
+    <ol>
+      <li><strong>Align the requested size</strong> to ensure proper memory alignment.</li>
+      <li><strong>Search the free list</strong> for a block large enough to reuse.</li>
+      <li>
+        If a suitable block exists, it is returned. If not, the allocator <strong>expands the heap</strong> using <code>sbrk()</code> and creates a new block.
+      </li>
+      <li>
+        If the chosen free block is larger than needed, the allocator
+        <strong>splits it</strong> into a used portion and a smaller free block to avoid wasted space.
+      </li>
+      <li>
+        The block is then <strong>removed from the free list</strong> and marked as allocated.
+      </li>
+      <li>
+        Finally, the allocator returns a pointer to the user memory region
+        (the space immediately after the metadata).
+      </li>
+    </ol>
+
+    <h3>Freeing & Reuse (<code>my_free()</code>)</h3>
+    <p>
+      When memory is freed:
+    </p>
+    <ol>
+      <li>The pointer is moved backward to locate the block header.</li>
+      <li>The block is marked as free and added back to the free list.</li>
+      <li>
+        The allocator checks neighboring blocks in the heap list.
+        If they are also free, they are <strong>coalesced</strong> into one larger block.
+      </li>
+    </ol>
+    <p>
+      This merging step is key to reducing fragmentation and ensuring the allocator can handle
+      larger future requests without repeatedly expanding the heap.
+    </p>
+
+    <h3>Reusing Memory Before Growing</h3>
+    <p>
+      A major focus of the design is reuse. The allocator always consumes free blocks first,
+      only calling <code>sbrk()</code> when absolutely necessary. This mirrors how real-world
+      allocators work and minimizes operating system interactions.
+    </p>
+    <p>
+      The result is a lightweight allocation engine that supports splitting, coalescing, and
+      efficient memory reuse while maintaining a clean, predictable structure internally.
+    </p>
+  </div>
+
+  <div class="project-section">
+    <h2>Key Features</h2>
+    <ul class="feature-list">
+      <li>Manual heap expansion using <code>sbrk()</code></li>
+      <li>Metadata headers for tracking block size and state</li>
+      <li>Two linked lists for efficient memory management</li>
+      <li>Block splitting to utilize oversized free regions</li>
+      <li>Coalescing to merge adjacent free blocks and reduce fragmentation</li>
+      <li>Aligned allocations for predictable layout and performance</li>
+      <li>Reusable static library (<code>liballocator.a</code>) built with a custom Makefile</li>
+    </ul>
+  </div>
+
+  <div class="project-section">
+    <h2>Tech Stack</h2>
+    <div class="tech-grid">
+      <div class="tech-category">
+        <h3>Language</h3>
+        <ul><li>C</li></ul>
+      </div>
+
+      <div class="tech-category">
+        <h3>Build System</h3>
+        <ul>
+          <li>Makefile</li>
+          <li>Static library output (<code>liballocator.a</code>)</li>
+        </ul>
+      </div>
+  
+      <div class="tech-category">
+        <h3>Debugging</h3>
+        <ul>
+          <li>GDB</li>
+          <li>Valgrind</li>
+          <li>Custom heap and free list visualization tools</li>
+        </ul>
+      </div>
+  
+      <div class="tech-category">
+        <h3>OS Interface</h3>
+        <ul><li><code>sbrk()</code> for heap growth</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Memory Allocator: Systems Programming Deep Dive | Bader Al Qasem</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<nav class="project-nav">
+  <a href="../blog.html">← Back to Blog</a>
+</nav>
+
+<section class="blog-post-hero">
+  <div class="blog-post-hero-content">
+    <h1>Custom Memory Allocator: Systems Programming Deep Dive</h1>
+    <p class="blog-post-meta">C · Systems Programming · Low-Level</p>
+  </div>
+  <div class="blog-post-hero-image">
+    <img src="../images/allocator.jpg" alt="Custom Memory Allocator" />
+  </div>
+</section>
+
+<section class="blog-post-content">
+
+  <div class="blog-post-section">
+    <h2>Why Build a Memory Allocator?</h2>
+    <p>
+      I’ve called <code>malloc()</code> and <code>free()</code> many, many times, but I never really understood what happened 
+      beneath that function call. Building a custom memory allocator from scratch was my way of breaking through that abstraction.
+      I wanted to learn how memory is actually managed, how the heap grows, why fragmentation happens, and what makes allocators
+      fast or slow. I also really wanted to understand how the heap worked.
+    </p>
+    <p>
+      This project pushed me into systems programming more than any other project I've done. Manually managing memory, writing
+      metadata structures, working with <code>sbrk()</code>, debugging pointer logic, and reasoning about layout at the byte level 
+      taught me a lot about how a computer works.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Designing the Allocator</h2>
+    <p>
+      Before writing any code, I drew out how a memory allocator actually works. Every allocation on the heap starts with a 
+      <strong>block header</strong> which is a small metadata struct that stores the block’s size, whether it’s free, and pointers that link
+      blocks together.
+    </p>
+
+    <h3>Heap Blocks: Metadata + User Memory</h3>
+    <p>Each block on the heap looks like this:</p>
+    <pre><code>| METADATA (block_header) | USER MEMORY |</code></pre>
+
+    <p>
+      When I return a pointer from <code>my_malloc()</code>, I give the user a pointer to the memory immediately after the header.
+      Later, when <code>my_free()</code> is called, I subtract the size of the header to recover the metadata.
+    </p>
+
+    <h3>Two Linked Lists: Heap List and Free List</h3>
+    <p>
+      A key design decision was to use <strong>two linked lists</strong>:
+    </p>
+    <ul>
+      <li><strong>Heap List</strong>: Contains every block in physical address order.</li>
+      <li><strong>Free List</strong>: Contains only free blocks, used for fast lookup.</li>
+    </ul>
+    <p>
+      This dual-list system mirrors real allocators such as <code>dlmalloc</code> and makes searching, splitting, and coalescing efficient.
+    </p>
+
+    <h3>Growing the Heap with <code>sbrk()</code></h3>
+    <p>
+      When no free block can satisfy an allocation request, my allocator calls <code>sbrk()</code> to ask the operating system
+      for more memory. <code>sbrk()</code> returns a contiguous chunk of heap space, which I wrap in a block header and insert 
+      into both lists.
+    </p>
+    <pre><code>sbrk(sizeof(block_header) + requested_size);</code></pre>
+
+    <h3>Splitting Blocks</h3>
+    <p>
+      If a free block is larger than needed, the allocator splits it:
+    </p>
+    <pre><code>[ USED BLOCK ][ NEW FREE BLOCK ]</code></pre>
+    <p>
+      This optimization reduces waste and keeps the heap flexible.
+    </p>
+
+    <h3>Freeing and Coalescing</h3>
+    <p>
+      When a block is freed, I mark it free and insert it into the free list. Then I try to merge it with neighboring free blocks which is
+      a process called <strong>coalescing</strong>. This helps avoid fragmentation:
+    </p>
+    <pre><code>[ FREE ][ FREE ] → [ BIG FREE ]</code></pre>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Testing the Allocator</h2>
+    <p>
+      I wrote several tests during the project, from small sanity checks to a full
+      randomized stress test. These were the most important ones.
+    </p>
+
+    <h3>1. Basic Allocation Test</h3>
+    <p>
+      The very first thing I validated was whether <code>my_malloc()</code> actually returned safe,
+      writable memory. I allocated a few blocks and filled them with known byte patterns:
+    </p>
+    <pre><code>void* a = my_malloc(32);
+void* b = my_malloc(64);
+
+memset(a, 0xAA, 32);
+memset(b, 0xBB, 64);</code></pre>
+    <p>
+      If these writes succeed, it means the allocator returned the correct region after the metadata header,
+      block splitting worked, and no hidden corruption occurred. This was the first sign that the engine 
+      underneath was behaving properly.
+    </p>
+
+    <h3>2. Coalescing Test</h3>
+    <p>
+      Next, I tested whether free blocks merge correctly. I allocated three blocks in a row and freed them
+      in an order that forces coalescing:
+    </p>
+    <pre><code>// Allocate three adjacent blocks
+a = my_malloc(32);
+b = my_malloc(32);
+c = my_malloc(32);
+
+my_free(b); // free middle block
+my_free(a); // should merge into [a+b]
+my_free(c); // should merge into [a+b+c]</code></pre>
+    <p>
+      After merging, the expected size of the combined block is:
+    </p>
+    <pre><code>32 + 32 + 32 + 2 * sizeof(block_header)</code></pre>
+    <p>
+      This test uncovered one of the trickiest bugs in the entire project.
+    </p>
+
+    <h3>3. Full Randomized Stress Test</h3>
+    <p>
+      Once splitting and coalescing worked in isolation, I stress-tested the entire allocator using thousands
+      of random allocation and free operations. In this test, I repeatedly allocated blocks of random sizes,
+      freed them in unpredictable orders, and constantly validated the heap and free list for structural
+      correctness:
+    </p>
+    <pre><code>for (int i = 0; i < 5000; i++) {
+    if (rand() % 2) {
+        void* p = my_malloc(random_size());
+        memset(p, 0xAB, size); // ensure memory is writable
+        ptrs[count++] = p;
+    } else if (count > 0) {
+        int idx = rand() % count;
+        my_free(ptrs[idx]);
+        ptrs[idx] = ptrs[count - 1];
+        count--;
+    }
+
+    validate_heap();
+    validate_free_list();
+}</code></pre>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>The Coalescing Bug I Found</h2>
+    <p>
+      During the coalescing test, the heap list looked perfect—all three blocks merged exactly as they should.
+      But the free list still showed a block of size 32 instead of the full merged size of 192 (32 + 32 + 32 for each block's user
+      memory plus 48 + 48 + 48 for each block's metadata).
+    </p>
+
+    <p><strong>The issue?</strong> I updated the heap list correctly during merges, but I wasn’t updating the
+      <strong>free list</strong> to reflect those changes.</p>
+
+    <p>
+      In a backward merge, the “current” block disappears and the previous block becomes the new merged block.
+      But I was still leaving the old block inside the free list, which meant the free list and heap list were
+      out of sync. Later merges had no chance of working correctly.
+    </p>
+
+    <p>
+      Once I updated <code>coalesce()</code> to return the new merged block and reinsert it properly into the
+      free list, everything snapped into place:
+    </p>
+    <pre><code>block = coalesce(block);</code></pre>
+    <p>
+      After that fix, both the coalescing test and the full randomized stress test passed with zero errors.
+      The heap and free list now stay perfectly synchronized, no matter what allocation pattern I throw at it.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>What I Learned</h2>
+    
+    <h3>Memory Management Fundamentals</h3>
+    <p>
+      This project made me really understand what’s actually 
+      going on behind malloc() and free(), and how closely user 
+      memory sits next to the allocator’s own bookkeeping. I 
+      learned why fragmentation happens, how splitting and 
+      coalescing fix it, and honestly, finally understanding how it all works was pretty cool.    
+    </p>
+  </div>
+
+  <div class="blog-post-footer">
+    <a href="../blog.html" class="blog-back-link">← Back to Blog</a>
+    <a href="../projects/memory-allocator.html" class="blog-project-link">View Project Details →</a>
+  </div>
+
+</section>

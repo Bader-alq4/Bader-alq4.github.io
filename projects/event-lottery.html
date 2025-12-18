@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Lottery App | Bader Al Qasem</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<nav class="project-nav">
+  <a href="../index.html">← Back to Projects</a>
+</nav>
+
+<section class="project-hero">
+  <div class="project-hero-content">
+    <h1>Event Lottery App</h1>
+    <p class="project-subtitle">
+      Android event management platform with lottery-based registration
+    </p>
+  </div>
+  <div class="project-hero-image" style="max-width: 70%; margin-left: auto;">
+    <img src="/images/event-lottery.jpg" alt="Event Lottery Android App" style="width: 100%;" />
+  </div>
+</section>
+
+<section class="project-content">
+
+  <!-- Project Links -->
+  <div class="project-section project-links">
+    <p>
+      <strong>Links:</strong>
+      <a href="https://github.com/CMPUT301-Sulfur/sulfur-events" target="_blank">GitHub Repository</a>
+    </p>
+  </div>
+
+  <!-- Overview -->
+  <div class="project-section">
+    <h2>Overview</h2>
+    <p>
+      The Event Lottery App is a full-featured Android application built as part
+      of a team-based software engineering project. Its primary goal is to make
+      event registration fair and accessible by replacing traditional
+      first-come-first-served signups with a lottery-based waitlist system.
+    </p>
+    <p>
+      The platform supports three user roles: Entrants, Organizers, and
+      Administrators. The application
+      is cloud-native and backed by Firebase, that allows real-time updates across
+      all users.
+    </p>
+    <p>
+      This project strongly emphasized collaborative development practices,
+      including Agile planning, GitHub-based workflows, and delivery
+      across multiple sprints.
+    </p>
+  </div>
+
+  <!-- Key Features -->
+  <div class="project-section">
+    <h2>Key Features</h2>
+    <ul class="feature-list">
+      <li>Lottery-based event registration with waitlists and invitations</li>
+      <li>Role-based flows for Entrants, Organizers, and Admins</li>
+      <li>Passwordless device-based authentication</li>
+      <li>QR code scanning for event discovery and check-in</li>
+      <li>Real-time notifications and event updates</li>
+      <li>Geolocation and map-based visualization of entrants</li>
+    </ul>
+  </div>
+
+  <!-- App Walkthrough -->
+  <div class="project-section">
+    <h2>App Walkthrough</h2>
+
+    <div class="walkthrough-section">
+      <h3>Entrant Experience</h3>
+      <p>
+        Entrants can browse joinable events, view event details, join waitlists,
+        and receive real-time notifications when selected in a lottery.
+      </p>
+      <div class="screenshot-grid">
+        <img src="/images/JoinableEvents.png" alt="Joinable events list" />
+        <img src="/images/JoiningEvent.png" alt="Event details and waitlist join" />
+        <img src="/images/Notification.png" alt="Entrant notifications" />
+        <img src="/images/Profile.png" alt="Entrant profile management" />
+      </div>
+    </div>
+
+    <div class="walkthrough-section">
+      <h3>Organizer Tools</h3>
+      <p>
+        Organizers can create events, manage waitlists, run lottery selections,
+        and view geographic distributions of entrants using integrated maps.
+      </p>
+      <div class="screenshot-grid">
+        <img src="/images/YourEvents.png" alt="Organizer dashboard" />
+        <img src="/images/ViewDetails.png" alt="Organizer event management panel" />
+        <img src="/images/WaitList.png" alt="Organizer waitlist view" />
+        <img src="/images/Geolocation.png" alt="Entrant geolocation map" />
+      </div>
+    </div>
+
+    <div class="walkthrough-section">
+      <h3>Admin Moderation</h3>
+      <p>
+        Administrators have full platform oversight, allowing them to moderate
+        events, user profiles, and uploaded images.
+      </p>
+      <div class="screenshot-grid">
+        <img src="/images/AdminDashBoard.png" alt="Admin dashboard" />
+        <img src="/images/ManageImages.png" alt="Admin image moderation" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="project-section">
+    <h2>Tech Stack</h2>
+    <div class="tech-grid">
+      <div class="tech-category">
+        <h3>Android</h3>
+        <ul>
+          <li>Java (Android SDK)</li>
+          <li>Activities & XML Layouts</li>
+          <li>RecyclerView & Adapters</li>
+        </ul>
+      </div>
+
+      <div class="tech-category">
+        <h3>Backend & Services</h3>
+        <ul>
+          <li>Firebase Firestore</li>
+          <li>Firebase Storage</li>
+          <li>Real-time Data Sync</li>
+        </ul>
+      </div>
+
+      <div class="tech-category">
+        <h3>Integrations</h3>
+        <ul>
+          <li>Google Maps SDK</li>
+          <li>ZXing (QR Code Scanning)</li>
+          <li>Glide (Image Loading)</li>
+        </ul>
+      </div>
+
+      <div class="tech-category">
+        <h3>Collaboration & Testing</h3>
+        <ul>
+          <li>GitHub Issues & Projects</li>
+          <li>Pull Requests & Code Reviews</li>
+          <li>Espresso UI Testing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teamwork -->
+  <div class="project-section">
+    <h2>Teamwork & Development Process</h2>
+    <p>
+      This project was developed by a six-person team following Agile and Scrum
+      practices. We maintained a structured product backlog, planned weekly
+      sprints, and tracked progress using GitHub Issues and Projects.
+    </p>
+    <p>
+      All features were implemented through feature branches and pull requests,
+      with regular code reviews and merge conflict resolution.
+    </p>
+  </div>
+
+  <!-- Notes -->
+  <div class="project-section">
+    <h2>Notes</h2>
+    <p>
+      This application was evaluated as a complete end-to-end system and
+      received full marks for both technical execution and development process.
+      The emphasis on teamwork and collaboration mirrored
+      real-world software engineering practices.
+    </p>
+  </div>
+
+</section>
+
+</body>
+</html>

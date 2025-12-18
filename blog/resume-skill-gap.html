@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Resume Skill Gap Analyzer | Bader Al Qasem</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<nav class="project-nav">
+  <a href="../blog.html">← Back to Blog</a>
+</nav>
+
+<section class="blog-post-hero">
+  <div class="blog-post-hero-content">
+    <h1>Building an AI Resume Skill Gap Analyzer</h1>
+    <p class="blog-post-meta">AI · Embeddings · Semantic Similarity · Systems Thinking</p>
+  </div>
+  <div class="blog-post-hero-image">
+    <img src="../images/resume-ai.jpg" alt="AI Resume Skill Gap Analyzer" />
+  </div>
+</section>
+
+<section class="blog-post-content">
+
+  <div class="blog-post-section">
+    <h2>Why I Built This</h2>
+    <p>
+      I wanted to go beyond simply calling AI APIs and actually understand how modern AI systems work under the hood.
+      Terms like <em>embeddings</em>, <em>semantic similarity</em>, and <em>vector search</em> are used everywhere, but
+      they often feel abstract until you build something end-to-end.
+    </p>
+    <p>
+      This project started with a simple question:  
+      <strong>How can a system compare a resume to a job role in a way that understands meaning, not just keywords?</strong>
+      Building a resume skill gap analyzer became my way of answering that question through practice.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>System Overview</h2>
+    <p>
+      At a high level, the system takes unstructured resume text and produces role recommendations based on
+      semantic similarity between skills.
+    </p>
+
+    <ol class="blog-flow">
+      <li>Parse and normalize skills from a resume</li>
+      <li>Represent skills as numerical vectors (embeddings)</li>
+      <li>Compare resume skills to predefined role requirements</li>
+      <li>Score similarity and recommend the best-matching roles</li>
+    </ol>
+
+    <p>
+      Each step is isolated into its own module, which made the system easier to test, reason about, and extend.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>From Text to Numbers: Embeddings</h2>
+    <p>
+      The core idea behind this project is embeddings. An embedding is a vector (a list of numbers) that represents
+      the meaning of a piece of text. Models like BERT learn these representations by being trained on massive amounts
+      of language data.
+    </p>
+    <p>
+      Instead of treating skills as plain strings, the system converts them into vectors in a high-dimensional space.
+      Skills with similar meanings end up closer together in that space, even if the exact words are different.
+    </p>
+    <p>
+      For example, terms like <em>"machine learning"</em>, <em>"ML"</em>, and <em>"artificial intelligence"</em> can
+      be numerically close, even though they are not textually identical.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Semantic Comparison with Cosine Similarity</h2>
+    <p>
+      Once skills are represented as vectors, the question becomes: how do we compare them?
+      This project uses <strong>cosine similarity</strong>, a common technique in machine learning.
+    </p>
+    <p>
+      Cosine similarity measures the angle between two vectors rather than their raw distance.
+      This is important because we care about how similar the meanings are, not how large the vectors are.
+    </p>
+    <p>
+      Mathematically, cosine similarity is defined as:
+    </p>
+    <pre class="math-block">
+cosine_similarity(A, B) = (A · B) / (||A|| × ||B||)
+    </pre>
+    <p>
+      A score closer to 1 means the skills are very similar, while a score closer to 0 means they are unrelated.
+      This allows the system to make nuanced comparisons instead of binary matches.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Why Semantic Search Beats Keyword Matching</h2>
+    <p>
+      Traditional keyword matching breaks down quickly in real-world data. Resumes and job descriptions use
+      different phrasing, abbreviations, and terminology.
+    </p>
+    <p>
+      Semantic similarity allows the system to understand intent and meaning rather than exact wording.
+      This made the recommendations more realistic and aligned with how humans evaluate candidates.
+    </p>
+    <p>
+      However, semantic systems also introduce tradeoffs: thresholds must be tuned carefully to avoid false positives,
+      and performance considerations become important as data scales.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Engineering Challenges</h2>
+
+    <h3>Skill Extraction and Normalization</h3>
+    <p>
+      Resumes are inconsistent by nature. Extracting meaningful skills required careful preprocessing, normalization,
+      and validation against a known skill set. Small mistakes at this stage propagate downstream.
+    </p>
+
+    <h3>Choosing Similarity Thresholds</h3>
+    <p>
+      Deciding what counts as a "match" required experimentation. Too strict, and relevant skills were missed.
+      Too loose, and unrelated skills were incorrectly matched. Iteration and testing were critical here.
+    </p>
+
+    <h3>Performance and Cost Awareness</h3>
+    <p>
+      Embedding generation is computationally expensive. I had to think about batching, caching, and system design
+      to keep the application responsive while understanding the cost tradeoffs of different approaches.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Looking Forward</h2>
+    <p>
+      This project gave me confidence working with modern AI concepts at a systems level and made me
+      feel more comfortable working with embeddings and similarity metrics.
+    </p>
+    <p>
+      In the future, I plan on extending the roles list to more than Data Scientist, Backend Engineer and ML Engineer and explore different types of embeddings.
+    </p>
+  </div>
+
+  <div class="blog-post-footer">
+    <a href="../blog.html" class="blog-back-link">← Back to Blog</a>
+    <a href="../projects/resume-skill-gap.html" class="blog-project-link">View Project Details →</a>
+  </div>
+
+</section>
+
+</body>
+</html>

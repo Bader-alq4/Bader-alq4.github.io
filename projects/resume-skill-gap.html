@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Resume Skill Gap Analyzer | Bader Al Qasem</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<nav class="project-nav">
+  <a href="../index.html">← Back to Projects</a>
+</nav>
+
+<section class="project-hero">
+  <div class="project-hero-content">
+    <h1>AI Resume Skill Gap Analyzer</h1>
+    <p class="project-subtitle">
+      Applied NLP system for resume analysis and personalized upskilling insights
+    </p>
+  </div>
+  <div class="project-hero-image">
+    <img src="/images/resume-ai.jpg" alt="AI Resume Skill Gap Analyzer" />
+  </div>
+</section>
+
+<section class="project-content">
+
+  <!-- Project Links -->
+  <div class="project-section project-links">
+    <p>
+      <strong>Links:</strong>
+      <a href="https://github.com/Bader-alq4/resume-skill-gap" target="_blank">GitHub Repository</a>
+    </p>
+  </div>
+
+  <div class="project-section">
+    <h2>Overview</h2>
+    <p>
+      The AI Resume Skill Gap Analyzer is a project I built to explore how modern
+      NLP and AI tools can be used to analyze resumes in a more meaningful way
+      than simple keyword matching.
+    </p>
+    <p>
+      Given a resume and a job description,
+      the system identifies missing or weak skills and generates personalized
+      recommendations for how a candidate could close those gaps.
+    </p>
+  </div>
+
+  <div class="project-section">
+    <h2>How It Works</h2>
+    <p>
+      Resumes and job descriptions are first parsed and normalized to extract
+      relevant text and skills. I then generate semantic embeddings using
+      Sentence-BERT to compare skills based on meaning rather than exact wording.
+    </p>
+    <p>
+      Based on these similarities, the system identifies skill gaps relative to
+      predefined role benchmarks. An OpenAI-powered recommendation module then
+      generates tailored learning suggestions, certifications, and next steps
+      for improvement.
+    </p>
+  </div>
+
+  <!-- SKILL MATCH EXPLANATION + IMAGE -->
+  <div class="project-section">
+    <!-- Image -->
+    <div style="margin-bottom: 3rem; display: flex; flex-direction: column; align-items: flex-end; gap: 2rem;">
+      <img
+        src="/images/skill-gap-example.jpg"
+        alt="Resume vs Data Scientist skill match breakdown"
+        style="
+          width: 100%;
+          max-width: 800px;
+          border-radius: 12px;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        "
+      />
+      <img
+        src="/images/recommend.jpg"
+        alt="AI-generated recommendations for skill gap improvement"
+        style="
+          width: 100%;
+          max-width: 800px;
+          border-radius: 12px;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        "
+      />
+    </div>
+
+    <h2>Interpreting the Skill Match Results</h2>
+
+    <div>
+      <p>
+        One of the main outputs of the system is a percentage-based match score
+        that shows how well a resume aligns with a specific role. In this
+        example, the resume is evaluated against a Data Scientist benchmark.
+      </p>
+      <p>
+        Each job-required skill is embedded using Sentence-BERT and compared
+        against all skills extracted from the resume using cosine similarity.
+        The system selects the closest matching resume skill and records the
+        similarity score.
+      </p>
+      <p>
+        Exact matches (such as <strong>Python → Python</strong> or
+        <strong>SQL → SQL</strong>) result in a 100% score. Partial or related
+        matches (for example, <strong>Pandas → Python</strong>) produce lower
+        similarity scores, indicating conceptual overlap rather than direct
+        experience.
+      </p>
+      <p>
+        A skill is only counted toward the final match score if it exceeds a
+        predefined similarity threshold. The overall percentage represents the
+        proportion of required role skills that are sufficiently covered,
+        while skills below the threshold are listed as missing to avoid
+        inflated results.
+      </p>
+    </div>
+  </div>
+
+  <div class="project-section">
+    <h2>Key Features</h2>
+    <ul class="feature-list">
+      <li>Semantic skill matching using Sentence-BERT embeddings</li>
+      <li>Role-based skill benchmarking using a curated taxonomy</li>
+      <li>AI-generated upskilling and learning recommendations</li>
+      <li>Modular FastAPI backend with clear separation of concerns</li>
+      <li>Containerized deployment with Docker</li>
+    </ul>
+  </div>
+
+  <div class="project-section">
+    <h2>Tech Stack</h2>
+    <div class="tech-grid">
+      <div class="tech-category">
+        <h3>Backend</h3>
+        <ul>
+          <li>Python</li>
+          <li>FastAPI</li>
+          <li>Pydantic</li>
+        </ul>
+      </div>
+      <div class="tech-category">
+        <h3>AI / NLP</h3>
+        <ul>
+          <li>Sentence-BERT</li>
+          <li>OpenAI API</li>
+          <li>spaCy</li>
+        </ul>
+      </div>
+      <div class="tech-category">
+        <h3>Data & Testing</h3>
+        <ul>
+          <li>Pandas</li>
+          <li>scikit-learn</li>
+          <li>pytest</li>
+        </ul>
+      </div>
+      <div class="tech-category">
+        <h3>Infrastructure</h3>
+        <ul>
+          <li>Docker & Docker Compose</li>
+          <li>Microsoft Azure</li>
+          <li>GitHub Actions (CI/CD)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Next Up Hoops | Bader Al Qasem</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+  <nav class="project-nav">
+    <a href="../index.html">← Back to projects</a>
+  </nav>
+
+  <section class="project-hero">
+    <div class="project-hero-content">
+      <h1>Next Up Hoops</h1>
+      <p class="project-subtitle">
+        A real website and system built for a local basketball organization
+      </p>
+    </div>
+    <div class="project-hero-image">
+      <img src="/images/next-up.jpg" alt="Next Up Hoops website" />
+    </div>
+  </section>
+
+  <section class="project-content">
+
+    <div class="project-section project-links">
+      <p>
+        <strong>Links</strong>
+        <a href="https://nextuphoops.ca" target="_blank">Live website</a>
+        <span class="link-separator">|</span>
+        <a href="https://www.loom.com/share/a33a5d323d4c44009416b2ebdadb3789" target="_blank">Video walkthrough</a>
+        <span class="link-separator">|</span>
+        <a href="https://github.com/Bader-alq4/next-up-showcase" target="_blank">Backend code</a>
+      </p>
+    </div>
+
+    <div class="project-section">
+      <h2>Overview</h2>
+      <p>
+        Before this project, the organization shared most of its information through
+        Instagram and word of mouth. Tryout details, schedules, and updates were
+        spread across posts, messages, and screenshots, which made things confusing
+        for players and parents.
+      </p>
+      <p>
+        I stepped in and built a proper website to bring everything into one place.
+        The goal was to make information easy to find and give the organization
+        a clean and reliable online presence.
+      </p>
+      <p>
+        This was a real project for a real organization. I worked directly with the
+        owner, attended tryouts, and talked with players and parents to understand
+        what they actually needed instead of guessing.
+      </p>
+    </div>
+
+    <div class="project-section">
+      <h2>What I built</h2>
+      <ul class="feature-list">
+        <li>A public website with clear program and tryout information</li>
+        <li>Online tryout registration with Stripe payments</li>
+        <li>A player dashboard to view registration and status</li>
+        <li>An internal admin dashboard for managing tryouts and decisions</li>
+        <li>Automatic emails for confirmations and results</li>
+      </ul>
+    </div>
+
+    <div class="project-section">
+      <h2>How players use it</h2>
+      <p>
+        Players can create an account, sign up for tryouts, pay online, and see
+        their current status in one place. This removed the need for constant
+        messaging and follow ups.
+      </p>
+
+      <div class="screenshot-grid screenshot-grid-large">
+        <div class="screenshot-item">
+          <img src="/images/create-account.jpg" alt="Account creation" />
+        </div>
+        <div class="screenshot-item">
+          <img src="/images/tryout-registration.jpg" alt="Tryout registration" />
+        </div>
+        <div class="screenshot-item">
+          <img src="/images/stripe-payment.jpg" alt="Stripe payment" />
+        </div>
+        <div class="screenshot-item">
+          <img src="/images/player-dashboard.jpg" alt="Player dashboard" />
+        </div>
+      </div>
+    </div>
+
+    <div class="project-section">
+      <h2>How admins use it</h2>
+      <p>
+        The admin side allows the organization to manage seasons, open and close
+        registration, review players, and send result emails. Any changes made by
+        admins show up immediately for players.
+      </p>
+
+      <div class="screenshot-grid screenshot-grid-large">
+        <div class="screenshot-item">
+          <img src="/images/admin-create-season.jpg" alt="Season management" />
+        </div>
+        <div class="screenshot-item">
+          <img src="/images/admin-player-selection.jpg" alt="Player selection" />
+        </div>
+      </div>
+    </div>
+
+    <div class="project-section">
+      <h2>Tech used</h2>
+      <div class="tech-grid">
+        <div class="tech-category">
+          <h3>Frontend</h3>
+          <ul>
+            <li>React</li>
+            <li>Client side form validation</li>
+            <li>Responsive layout</li>
+          </ul>
+        </div>
+
+        <div class="tech-category">
+          <h3>Backend</h3>
+          <ul>
+            <li>Node and Express</li>
+            <li>Authentication with JWT</li>
+            <li>Role based access for admins</li>
+          </ul>
+        </div>
+
+        <div class="tech-category">
+          <h3>Database and services</h3>
+          <ul>
+            <li>PostgreSQL</li>
+            <li>Stripe payments</li>
+            <li>Email notifications</li>
+          </ul>
+        </div>
+
+        <div class="tech-category">
+          <h3>Deployment</h3>
+          <ul>
+            <li>Vercel for the frontend</li>
+            <li>Render for the backend</li>
+            <li>Custom domain and environment setup</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-section">
+      <h2>Important context</h2>
+      <p>
+        The organization currently uses the website mainly for sharing information
+        and updates. The backend systems such as accounts, registration, payments,
+        and admin tools were built as part of my own learning.
+      </p>
+      <p>
+        Those systems were still built and tested end to end with real users and can be used
+        if the organization decides to expand in the future. I included them
+        because I wanted to understand how a full system works in real conditions,
+        not just in small demos.
+      </p>
+      <p>
+        This project taught me how to build something for real peopl and deal with
+        real-world constraints and it made me a stronger and more well-rounded engineer. 
+      </p>
+    </div>
+
+  </section>
+
+</body>
+</html>

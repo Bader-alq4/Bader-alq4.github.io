@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building a Production-Level Full Stack System | Bader Al Qasem</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<nav class="project-nav">
+  <a href="../blog.html">← Back to blog</a>
+</nav>
+
+<section class="blog-post-hero">
+  <div class="blog-post-hero-content">
+    <h1>Building a Production-Level Full Stack System</h1>
+    <p class="blog-post-meta">
+      Web Systems · Backend Architecture · Authentication · Payments
+    </p>
+  </div>
+  <div class="blog-post-hero-image">
+    <img src="../images/next-up.jpg" alt="Next Up Hoops system" />
+  </div>
+</section>
+
+<section class="blog-post-content">
+
+  <div class="blog-post-section">
+    <h2>Why I Built This</h2>
+    <p>
+      Before this project, most information lived on Instagram.
+      Tryouts, schedules, updates were scattered across posts,
+      stories only, and there was no single place people could
+      rely on for information.
+    </p>
+    <p>
+      I originally set out to fix that with a simple website where players
+      and parents could find accurate information. But once I started, I
+      realized this was a good opportunity to go deeper.
+    </p>
+    <p>
+      I expanded the project into a full backend system so I could learn how
+      real production systems are actually built. Even though not every
+      feature is actively used today, everything was designed, implemented,
+      and tested end to end.
+    </p>
+    <p>
+      This project became my way of understanding how modern web systems work
+      under real constraints.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>How the Application Works Internally</h2>
+    <p>
+      At a high level, the system follows a standard client–server model.
+      A React frontend sends HTTP requests to an Express backend. The backend
+      handles authentication, validation, business logic, and database access.
+    </p>
+    <p>
+      Thinking about how a single request flows through the system helped me
+      reason about bugs, security issues, and production behavior.
+    </p>
+
+    <h3>Server entry point</h3>
+    <p>
+      The backend starts in <code>server.js</code>. This file is responsible for
+      bootstrapping the application. It loads environment variables, connects
+      to the database, and starts the HTTP server.
+    </p>
+    <p>
+      The Express app itself lives in <code>app.js</code>. Separating startup
+      logic from the app definition made testing easier and kept configuration
+      concerns isolated from runtime behavior.
+    </p>
+
+    <h3>Global middleware and request handling</h3>
+    <p>
+      Every request passes through a shared middleware pipeline before it ever
+      reaches a route handler. This includes JSON parsing, logging, security
+      headers, CORS configuration, and rate limiting on sensitive endpoints.
+    </p>
+    <p>
+      Middleware order matters. Authentication must run before protected routes.
+      Validation must run before controller logic. Thinking in terms of a request
+      pipeline helped me avoid subtle bugs.
+    </p>
+
+<pre><code>Request
+→ middleware
+→ authentication
+→ validation
+→ controller
+→ database
+→ response
+</code></pre>
+
+    <h3>Routing and controllers</h3>
+    <p>
+      Routes are grouped by feature area such as authentication, tryouts, payments,
+      and admin actions. Routes define the HTTP method and path, but contain very
+      little logic themselves.
+    </p>
+    <p>
+      Business logic lives in controllers. Controllers assume authentication
+      and validation have already run. This separation kept responsibilities
+      clear and made the codebase easier to extend over time.
+    </p>
+
+    <h3>Authentication flow in practice</h3>
+    <p>
+      For protected routes, the client sends an access token in the
+      <code>Authorization</code> header. Middleware verifies the token,
+      checks expiration, and attaches the user to the request.
+    </p>
+    <p>
+      If the token is missing or invalid, the request is rejected immediately.
+      Unauthorized requests never reach sensitive code paths.
+    </p>
+
+    <h3>Error handling and status codes</h3>
+    <p>
+      Controllers return appropriate HTTP status codes based on the outcome of
+      each request. Invalid input returns 400-level errors. Authentication
+      failures return 401 or 403.
+    </p>
+    <p>
+      Centralized error handling keeps responses consistent and makes frontend
+      behavior more predictable.
+    </p>
+
+    <h3>Local development vs deployment</h3>
+    <p>
+      Many issues don’t show up locally. Once deployed, browser security rules,
+      cookies, CORS, and environment variables behave differently.
+    </p>
+    <p>
+      I had to explicitly configure allowed origins, enable credentials for
+      refresh tokens, and double-check environment-specific settings. It was extremely tedious
+      but it reinforced how important it is to test projects when they're deployed, not just locally.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Authentication and Sessions</h2>
+    <p>
+      I implemented authentication using JSON Web Tokens to understand how
+      stateless auth works in practice. The system uses two tokens.
+    </p>
+    <p>
+      Access tokens are short-lived and sent with every protected request.
+      Refresh tokens are long-lived and stored in httpOnly cookies.
+    </p>
+    <p>
+      This setup balances security and user experience. Access tokens are fast
+      to verify. Refresh tokens allow sessions to persist without forcing users
+      to constantly log in again.
+    </p>
+
+<pre><code>Authorization: Bearer &lt;access_token&gt;
+</code></pre>
+
+    <p>
+      When an access token expires, the client automatically calls a refresh
+      endpoint. If the refresh token is valid, a new access token is issued and
+      the original request is retried.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Authorization and Roles</h2>
+    <p>
+      Authentication and authorization are separate concerns. Being logged in
+      does not automatically mean you can do everything.
+    </p>
+    <p>
+      Sensitive routes check both token validity and user role. Admin-only
+      routes are protected on the backend, not just hidden in the UI.
+    </p>
+    <p>
+      Frontend checks improve UX. Backend checks are what actually provide
+      security.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>HTTP, CORS, and Security</h2>
+    <p>
+      Because the frontend and backend are deployed separately, I had to deal
+      with cross-origin requests. CORS is explicitly configured to allow only
+      the frontend origin and support credentials.
+    </p>
+    <p>
+      I also added basic security layers: request logging, rate limiting on
+      auth routes, and HTTP headers to reduce common attack vectors.
+    </p>
+  </div>
+
+  <div class="blog-post-section">
+    <h2>Payments and Webhooks</h2>
+    <p>
+      Even though payments aren’t currently used, I fully implemented Stripe
+      to understand real-world payment flows.
+    </p>
+    <p>
+      The key lesson was that the frontend is never the source of truth for
+      payments. Stripe webhooks are.
+    </p>
+    <p>
+      After checkout, Stripe sends an event to the backend. The backend verifies
+      the signature, validates the amount and currency, and only then updates
+      the database.
+    </p>
+    <p>
+      This prevents payments from being faked through frontend manipulation.
+    </p>
+  </div>
+
+
+  <div class="blog-post-section">
+    <h2>What I Took Away From This</h2>
+    <p>
+      The biggest thing I learned from this project was how to think about building
+      a full stack system from start to finish.
+    </p>
+    <p>
+      I stopped thinking only in terms of code and started thinking about how a real
+      user would interact with the system. What they expect to work. What feels slow.
+      What breaks when something unexpected happens.
+    </p>
+    <p>
+      The way I test things changed as well. I started testing flows the way a user
+      would use them instead of only checking that endpoints returned the right data.
+      I tried actions out of order and paid more attention to edge cases.
+    </p>
+    <p>
+      I also got much better at reading documentation. Features like payments forced
+      me to rely on official docs instead of examples. Working through Stripe
+      documentation taught me how to understand real APIs and implementation details.
+    </p>
+      <div class="blog-post-footer">
+    <a href="../blog.html">← Back to blog</a>
+    <a href="../projects/next-up-hoops.html">View project page</a>
+  </div>
+
+</section>
+
+</body>
+</html>
