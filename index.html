@@ -11,15 +11,20 @@
 <body>
 
 <nav>
+  <div class="nav-brand">
+    <a href="index.html" class="nav-brand-link"><strong>Bader Al Qasem</strong></a>
+    <span>Software Engineer</span>
+  </div>
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
   <div class="nav-links">
     <a href="#projects">Projects</a>
     <a href="Bader_Alqasem_resume.pdf" target="_blank">Resume</a>
     <a href="blog.html">Blog</a>
     <a href="https://www.linkedin.com/in/bader-al-qasem/" target="_blank">LinkedIn</a>
-  </div>
-  <div class="nav-brand">
-    <a href="index.html" class="nav-brand-link"><strong>Bader Al Qasem</strong></a>
-    <span>Software Engineer</span>
   </div>
 </nav>
 
@@ -89,6 +94,34 @@
       </a>
   </div>
 </section>
+
+<script>
+  // Hamburger menu toggle
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
+  const nav = document.querySelector('nav');
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('active');
+  });
+
+  // Close menu when clicking on a link
+  navLinks.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') {
+      hamburger.classList.remove('active');
+      navLinks.classList.remove('active');
+    }
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!nav.contains(e.target) && navLinks.classList.contains('active')) {
+      hamburger.classList.remove('active');
+      navLinks.classList.remove('active');
+    }
+  });
+</script>
 
 </body>
 </html>
